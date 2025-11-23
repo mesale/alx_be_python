@@ -1,75 +1,66 @@
-
-# Global conversion factors (accessible within functions)
-FAHRENHEIT_TO_CELSIUS_FACTOR = 5.0 / 9.0
-CELSIUS_TO_FAHRENHEIT_FACTOR = 9.0 / 5.0
+# Global conversion factors
+FAHRENHEIT_TO_CELSIUS_FACTOR = 5 / 9
+CELSIUS_TO_FAHRENHEIT_FACTOR = 9 / 5
 
 
 def convert_to_celsius(fahrenheit):
     """
-    Convert Fahrenheit to Celsius using the global FAHRENHEIT_TO_CELSIUS_FACTOR.
-
-    Parameters:
-        fahrenheit (float): temperature in Fahrenheit
-
+    Convert temperature from Fahrenheit to Celsius.
+    
+    Args:
+        fahrenheit: Temperature in Fahrenheit
+    
     Returns:
-        float: temperature in Celsius
+        Temperature in Celsius
     """
-    # Read the global conversion factor to illustrate variable scope.
-    global FAHRENHEIT_TO_CELSIUS_FACTOR
-    return (fahrenheit - 32.0) * FAHRENHEIT_TO_CELSIUS_FACTOR
+    celsius = (fahrenheit - 32) * FAHRENHEIT_TO_CELSIUS_FACTOR
+    return celsius
 
 
 def convert_to_fahrenheit(celsius):
     """
-    Convert Celsius to Fahrenheit using the global CELSIUS_TO_FAHRENHEIT_FACTOR.
-
-    Parameters:
-        celsius (float): temperature in Celsius
-
+    Convert temperature from Celsius to Fahrenheit.
+    
+    Args:
+        celsius: Temperature in Celsius
+    
     Returns:
-        float: temperature in Fahrenheit
+        Temperature in Fahrenheit
     """
-    global CELSIUS_TO_FAHRENHEIT_FACTOR
-    return (celsius * CELSIUS_TO_FAHRENHEIT_FACTOR) + 32.0
+    fahrenheit = (celsius * CELSIUS_TO_FAHRENHEIT_FACTOR) + 32
+    return fahrenheit
 
 
-def _parse_temperature_input(temp_str):
+def main():
     """
-    Parse the temperature input string and return it as a float.
-
-    Raises:
-        ValueError: with the exact message required when parsing fails.
+    Main function to handle user interaction for temperature conversion.
     """
     try:
-        return float(temp_str)
-    except (TypeError, ValueError):
-        raise ValueError("Invalid temperature. Please enter a numeric value.")
-
-
-def prompt_and_convert():
-    """
-    Prompt the user for a temperature and unit, validate input, perform conversion,
-    and print the result.
-
-    Raises:
-        ValueError: if temperature parsing fails or if the unit is invalid.
-    """
-    temp_input = input("Enter the temperature to convert: ").strip()
-    temp_value = _parse_temperature_input(temp_input)
-
-    unit_input = input("Is this temperature in Celsius or Fahrenheit? (C/F): ").strip().lower()
-
-    if unit_input in ("f", "fahrenheit"):
-        converted = convert_to_celsius(temp_value)
-        print(f"{temp_value}°F is {converted}°C")
-    elif unit_input in ("c", "celsius"):
-        converted = convert_to_fahrenheit(temp_value)
-        print(f"{temp_value}°C is {converted}°F")
-    else:
-        raise ValueError("Invalid unit. Please enter 'C' or 'F'.")
+        # Get temperature input from user
+        temp_input = input("Enter the temperature to convert: ")
+        temperature = float(temp_input)
+        
+        # Get unit input from user
+        unit = input("Is this temperature in Celsius or Fahrenheit? (C/F): ").strip().upper()
+        
+        # Validate unit input
+        if unit not in ['C', 'F']:
+            raise ValueError("Invalid unit. Please enter 'C' for Celsius or 'F' for Fahrenheit.")
+        
+        # Convert temperature based on unit
+        if unit == 'F':
+            converted_temp = convert_to_celsius(temperature)
+            print(f"{temperature}°F is {converted_temp}°C")
+        else:  # unit == 'C'
+            converted_temp = convert_to_fahrenheit(temperature)
+            print(f"{temperature}°C is {converted_temp}°F")
+    
+    except ValueError as e:
+        if "could not convert" in str(e):
+            print("Invalid temperature. Please enter a numeric value.")
+        else:
+            print(str(e))
 
 
 if __name__ == "__main__":
-    # Intentionally allow ValueError to propagate so tests can detect it;
-    # when used interactively this will show the error and traceback.
-    prompt_and_convert()
+    main()
